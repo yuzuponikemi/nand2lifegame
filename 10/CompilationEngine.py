@@ -350,7 +350,7 @@ class CompilationEngine:
             elif self.tn.currenttkn == '-': #????????
                 self.writetkn(False)
                 self.tn.advance()
-                self.compileTeem()
+                self.compileTerm()
                 self.tn.advance()
                 
             else:
