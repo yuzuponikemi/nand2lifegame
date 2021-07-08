@@ -1,0 +1,14 @@
+function Main.main 1
+call LifeGame.new 0
+pop local 0
+push local 0
+call LifeGame.creation 1
+pop temp 0
+push local 0
+call LifeGame.run 1
+pop temp 0
+push local 0
+call LifeGame.dispose 1
+pop temp 0
+push constant 0
+return

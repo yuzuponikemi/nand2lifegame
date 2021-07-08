@@ -1,0 +1,86 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in 
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time step. If reset==1 then the 
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution  111accccccdddjjj or 0v15
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 1=write
+        addressM[15],    // Address in data memory (of M)--0vvvvvvvvvvvvvvv
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // Put your code here:
+	
+	Or(a=instruction[15], b=false, out=insti); //decode 0-A 1-C
+	Or(a=instruction[12], b=false, out=insta); //decode a 0-A 1-M 
+	Or(a=instruction[11], b=false, out=instc0); //decode cccccc
+	Or(a=instruction[10], b=false, out=instc1); //decode cccccc
+	Or(a=instruction[9], b=false, out=instc2); //decode cccccc
+	Or(a=instruction[8], b=false, out=instc3); //decode cccccc
+	Or(a=instruction[7], b=false, out=instc4); //decode cccccc
+	Or(a=instruction[6], b=false, out=instc5); //decode cccccc
+	Or(a=instruction[5], b=false, out=instd0); //decode ddd(012-ADM)
+	Or(a=instruction[4], b=false, out=instd1); //decode ddd(012-ADM)
+	Or(a=instruction[3], b=false, out=instd2); //decode ddd(012-ADM)
+	Or(a=instruction[2], b=false, out=instj1); //decode jjj
+	Or(a=instruction[1], b=false, out=instj2); //decode jjj
+	Or(a=instruction[0], b=false, out=instj3); //decode jjj
+	
+	Mux16(a=instruction[0..15], b=ALUout, sel=insti, out=toAreg);	//out to A Register
+	Mux16(a=Aregout, b=inM[0..15], sel=insta, out=yALU);	//out to ALU
+	
+	Not(in=insti, out=ninsti);
+	And(a=insti, b=instd0, out=instid0);
+	Or(a=ninsti, b=instid0, out=Aregload);
+	ARegister(in=toAreg, load=Aregload, out=Aregout);	//A
+	Or16(a=Aregout, b=false, out[0..14]=addressM[0..14], out[15]=trash);
+	And(a=insti, b=instd1, out=instid1);
+	DRegister(in=ALUout, load=instid1, out=xALU);	//D
+	
+	ALU(x[0..15]=xALU, y[0..15]=yALU,zx=instc0,nx=instc1,zy=instc2,ny=instc3,f=instc4,no=instc5,out=ALUout,zr=zr,ng=ng);
+	And(a=instd2, b=insti, out=writeM); //WriteM
+	Or16(a=ALUout, b=false, out=outM[0..15]);
+		
+	//jump = j1andng or j2andzr or j3andpos
+	And(a=instj1, b=ng, out=j1andng);
+	And(a=instj2, b=zr, out=j2andzr);
+	Not(in=ng,out=nng);
+	Not(in=zr, out=nzr);
+	And(a=nng, b=nzr, out=pos);
+	And(a=instj3, b=pos, out=j3andpos);
+	Or8Way(in[0]=j1andng, in[1]=j2andzr, in[2]=j3andpos, in[3..7]=false, out=letsjmp);
+	And(a=letsjmp, b=insti, out=instjmp);
+	PC(in=Aregout, load=instjmp, inc=true, reset=reset, out[0..14]=pc[0..14]);
+	
+
+}

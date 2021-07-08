@@ -1,0 +1,298 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/09/LifeGame/LifeGame.jack
+
+/** Implements a LifeGame. */
+class LifeGame {
+
+   field Array  currentfield; // field array
+   field Array  nextfield; // field array
+   field int xw,yw;
+   field int cell; 
+
+   /** Constructs a new field with a given location and size. */
+   constructor LifeGame new() {
+      var int i;
+	  let cell = 6;
+   	  let xw = 52;
+	  let yw = 32;
+      let currentfield = Array.new(yw);
+	  let nextfield = Array.new(yw);
+      while (i < yw) {
+		 let currentfield[i] = Array.new(xw);
+		 let nextfield[i] = Array.new(xw);
+         let i = i + 1;
+		}
+      return this;
+   }
+
+   /** Disposes this LifeGame. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+   
+   /** Calc moduler. */
+   method int mod(int i, int m) {
+      var int temp, tempp;
+	  let temp = (i/m)*m;
+	  let tempp = i - temp;
+      return tempp;
+   }
+   
+   /** Generate random numbers with LCG. */
+   method Array randoms() {
+      var Array randoms, randomsbin;
+	  var int seed,j,a,c,m,axc,temp,tempp;
+	  let randoms = Array.new(yw*xw);
+	  let randomsbin = Array.new(xw*yw);
+	  let randoms[0] = Keyboard.readInt("Give me a seed number to init field(less than 2300): ");
+	  //let randoms[0] = 0;
+      let j = 0;
+	  let a = 10;
+	  let c = 1;
+	  let m = 2371;
+	  while(j<(xw*yw)){
+	    //do Output.printInt(j);
+		let temp = (a*randoms[j])+c ;
+		let tempp = mod(temp,m);
+		let j = j + 1;
+		let randoms[j] = tempp;//Math.abs(tempp);
+		//do Output.printInt(randoms[j]);
+		//do Output.printChar(a);
+		if ((mod(tempp,7)=0)){ //
+			let randomsbin[j] = 1;}
+		else{let randomsbin[j] = 0;}
+		
+	  }
+	  do randoms.dispose();
+      return randomsbin;
+   }
+   
+   /** Create initial state */
+   method void creation() {
+      var Array now, randomsbin;
+      var int i, k, ik;
+      let i = 0;
+	  //let now = Array.new(xw);
+	  let randomsbin = randoms();
+      while (i < yw) {
+	     let k = 0;
+		 let now = currentfield[i];
+         while (k < xw) {
+			let now[k] = 0;
+			let ik = (i*xw)+k;
+			if ((randomsbin[ik]=1)) {//boundary condition|(i=k)|(i=k+5)
+				let now[k] = 1;
+			}
+			let k = k + 1;
+		 }
+		 
+		 //do Output.printInt(i);
+		 //do Output.printChar(i);
+		 let i = i + 1;
+		 //do Output.println();
+	  }
+	  do now.dispose();
+	  do drawfield();
+      return;
+   }
+
+
+
+
+/** check environment */
+   method int evnum(int i,int k) {
+	  var int evnum ,temp;
+	  var Array check;
+	  var int ie, ke;
+	  var int it, kt;
+	  var int i, k;
+      let ie = -1;   
+	  let evnum = 0;
+	  //let check = Array.new(xw);
+      while (ie < 2) {
+	     let it = i + ie;
+		 
+		 let ke = -1;
+         while (ke < 2) {		    
+		    let kt = k + ke ;
+			if (((kt=-1)|(kt>(xw-1))|(it=-1)|(it>(yw-1)))) {
+
+			}
+			else{
+			   let check = currentfield[it];
+   			   if ((ie=0)&(ke=0)){
+			   }
+               else{
+			      let temp = check[kt];
+			      let evnum = evnum + temp;
+			   }
+			}
+			let ke = ke + 1;
+			//do Output.printInt(kt);
+		 }
+		 let ie = ie + 1;
+		 //do Output.printInt(it);
+	  }
+	  
+	  //do Output.printInt(evnum);
+	  //do Output.printChar(i);
+
+	  do check.dispose();
+      return evnum;
+   }
+   
+   
+   
+   
+   
+   /** evolute */
+   method void evolution() {
+	  var Array now, next;
+	  var int i, k, evnum;
+      let i = 0;
+	  //let now = Array.new(xw);
+	  //let next = Array.new(xw);
+      while (i < yw) {
+	     let now = currentfield[i];
+         let next = nextfield[i];
+	     let k = 0;
+         while (k < xw) {
+			let evnum = evnum(i,k);
+			if (now[k]=0) {
+			   if ((evnum=10)|(evnum=3)) {
+			      let next[k]=1;
+			   }
+			   else {
+			      let next[k]=0;
+			   }
+			}
+			else{  //now[k]=1
+
+   			   if ((evnum=2)|(evnum=3)) {
+			      let next[k]=1;
+			   }
+			   else {
+			      let next[k]=0;
+			   }
+			}
+			let k = k + 1;
+		 }
+		 let i = i + 1;
+	  }
+	  //let currentfield = nextfield;
+	  
+	  do now.dispose();
+	  do next.dispose();
+      return;
+   }
+
+
+
+
+   /** Reset field. */
+   method void resetnext() {
+      var Array now,next;
+      var int i, k, temp;
+      let i = 0;
+	  //let now = Array.new(xw);
+	  //let next = Array.new(xw);
+	  
+      while (i < yw) {
+	     let k = 0;
+		 let now = currentfield[i];
+         let next = nextfield[i];
+         while (k < xw) {
+		    let now[k] = next[k];
+			let next[k] = 0;
+			let k = k + 1;
+		 }
+		 let i = i + 1;
+	  }
+	  do now.dispose();
+	  do next.dispose();
+      return;
+   }
+
+    /** Function for running all the processes */
+   method void run() {
+      var boolean exit;
+	  var char key;
+	  var int gen;
+	  var String mes;
+      let exit = false;
+	  let gen = 1;
+	  let mes = String.new(40);
+	  let mes = "Thanks. Please enjoy your small world.";
+	  do Output.printString(mes);
+	  do Output.println();
+	  let mes = "Current generation is..";
+	  do Output.printString(mes);
+      while (~exit) {
+         // waits for a key to be pressed
+		 let key = 1;
+         while (key = 0) {
+            let key = Keyboard.keyPressed();
+         }
+         if (key = 81)  { let exit = true; }     // q key
+         else{	  do Output.moveCursor(4,2);
+			      do Output.printInt(gen);
+				  do evolution();
+		          do resetnext();
+	              do drawfield();
+				  
+				  let gen = gen + 1;}
+
+      } // while
+
+      return;
+   }
+
+
+   /** Draws the field on the screen. 
+   Column indices start at 0 and are left-to-right.
+	Row indices start at 0 and are top-to-bottom.
+	Hack platform: 256 rows by 512 columns*/
+   method void drawfield() {
+      var Array now;
+      var int i, k;
+	  var int iact, kact;
+	  var int iend, kend;
+      let i = 0;
+      
+	  let now = Array.new(xw);
+      while (i < yw) {
+	     let k = 0;
+		 let now = currentfield[i];
+         while (k < xw) {
+			let iact = ((i*cell)+200-(xw*cell/2));
+            let kact = ((k*cell)+250-(yw*cell/2));
+			let iend = iact + cell;
+            let kend = kact + cell;
+			if (now[k]=1) {
+				do Screen.setColor(true);
+				do Screen.drawRectangle(kact,iact,kend,iend );
+			}
+			if (now[k]=0) {
+				do Screen.setColor(false);
+				do Screen.drawRectangle(kact,iact,kend,iend );
+			}
+			if(now[k]>1){
+				do Screen.setColor(true);
+				do Screen.drawCircle(5,5,200);
+			}
+			let k = k + 1;
+		 }
+		 let i = i + 1;
+	  }
+	  do now.dispose();
+      return;
+	  
+   }
+   
+   
+
+
+}
