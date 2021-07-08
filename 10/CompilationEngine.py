@@ -432,8 +432,6 @@ class CompilationEngine:
     
 if __name__ == "__main__":
     # execute only if run as a script
-    #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/08/FunctionCalls/SimpleFunction/SimpleFunction.vm'
-    #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/08/FunctionCalls/FibonacciElement'
     tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/08/FunctionCalls/NestedCall'
     tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/Square'
     print('tranlating...'+tgt)
