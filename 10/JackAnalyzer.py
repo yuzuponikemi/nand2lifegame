@@ -90,7 +90,7 @@ if __name__ == "__main__":
     #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/09/Lifegame/LifeGame.jack'
     tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/Square/SquareGame.jack'
     tgt = "C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/ArrayTest/Main.jack"
-    tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/Square'
+    tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/ArrayTest'
     if len(args) != 1 : tgt = args[1]
     print('tranlating...'+tgt)
 #    asm = Assembler(sys.argv)

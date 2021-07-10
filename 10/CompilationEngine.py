@@ -306,7 +306,9 @@ class CompilationEngine:
                 self.writetkn(False) # {
                 self.tn.advance()
                 self.compileStatements()
-                if self.tn.currenttkn == '}':break
+                if self.tn.currenttkn == '}':
+                    self.writetkn(False)#}
+                    break
 
         
         self.ind = self.ind[:-2]
@@ -317,12 +319,13 @@ class CompilationEngine:
     def compileTerm(self, SubroutineCall = False):
         '''
         '''
+        stillterm = False
         if not SubroutineCall :
             self.f.write(self.ind + '<term>' +'\n')
             self.ind += '  '
         while(True):
             
-            if self.tn.tkns[self.tn.counter] == '(' and self.tn.currenttkn != '(':
+            if self.tn.tkns[self.tn.counter] == '(' and self.tn.currenttkn not in['~', '(']:
                 self.writetkn(False)
                 self.tn.advance()
                 self.writetkn(False)#(
@@ -347,16 +350,16 @@ class CompilationEngine:
                 self.writetkn(False)# .
                 self.tn.advance()
                 
-            elif self.tn.currenttkn == '-': #????????
+            elif self.tn.currenttkn in ['-','~'] :#????????
                 self.writetkn(False)
                 self.tn.advance()
                 self.compileTerm()
-                self.tn.advance()
+                stillterm = True
                 
             else:
                 break
             
-        self.writetkn(False)
+        if not stillterm : self.writetkn(False)
         #self.tn.advance()
         if not SubroutineCall :
             self.ind = self.ind[:-2]
@@ -374,7 +377,7 @@ class CompilationEngine:
         while(True):
             
             if self.tn.currenttkn in [')',']',';',',']:break
-            if self.tn.currenttkn in ['+','<','>','=', '-', '*', '/', '&','|'] and (place !=0):
+            if self.tn.currenttkn in ['+','<','>','=', '-', '*', '/', '&','|','~'] and (place !=0):
                 self.writetkn(False)# .
                 self.tn.advance()
                 place +=1
