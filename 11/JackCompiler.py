@@ -4,19 +4,23 @@ Created on Mon Mar 29 18:43:06 2021
 
 @author: IKM1YH
 
-JackAnalyzer.py
+JackCompiler.py
 The analyzer program operates on a given source, where source is either a file name of the form Xxx.jack
 or a directory name containing one or more such files. For each source Xxx.jack file, the analyzer goes
 through the following logic:
 1. Create a JackTokenizer from the Xxx.jack input file.
-2. Create an output file called Xxx.xml and pretne it for writing.
+2. Create an output file called Xxx.vm and pretne it for writing.
 3. Use the CompilationEngine to compile the input JackTokenizer into the output file.
 
+(CompilationEngine uses VMWriter.py and SymbolTable))
 """
 
 import JackTokenizer
 import CompilationEngine
 import os
+import sys
+
+args = sys.argv
 
 class JackCompiler:
     def __init__(self,tgtname):
@@ -64,8 +68,8 @@ if __name__ == "__main__":
     #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/09/Lifegame/LifeGame.jack'
     tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/11/ConvertToBin'
     tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/11/Pong'
-    tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/11/ComplexArrays/Main.jack'
-    
+    tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/11/Square'
+    if len(args) != 1 : tgt = args[1]
     print('tranlating...'+tgt)
 #    asm = Assembler(sys.argv)
 #    print(asm)

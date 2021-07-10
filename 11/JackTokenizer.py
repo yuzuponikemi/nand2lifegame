@@ -204,7 +204,7 @@ if __name__ == "__main__":
     #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/08/FunctionCalls/SimpleFunction/SimpleFunction.vm'
     #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/example2.jack'
     #tgt = 'C:/Users/ikm1yh/Desktop/nand2tetris/projects/10/Square/SquareGame.jack'
-    tgt = args[1]
+    #tgt = args[1]
     print('Tokenizing...'+tgt)
 #    asm = Assembler(sys.argv)
 #    print(asm)
