@@ -509,18 +509,21 @@ class CompilationEngine:
         #self.f.write(self.ind + '<expression>' +'\n')
         self.ind += '  '
         op = None
-        Unaryop = True
+        Unaryop = False
+        place = 0
         while(True):
             
             if self.tn.currenttkn in [')',']',';',',']:break
-            if self.tn.currenttkn in ['+','<','>','=', '-', '*', '/', '&','|','~']:
+            if self.tn.currenttkn in ['+','<','>','=', '-', '*', '/', '&','|','~'] :
                 self.writetkn(False)# 
                 op = self.tn.currenttkn
+                if place == 0: Unaryop = True
                 self.tn.advance()
+                place +=1
             else:
                 self.compileTerm()#
                 self.tn.advance()
-                Unaryop = False
+                place +=1
                 
         if op : self.vmw.writeArithmetic(op,Unaryop) 
 
