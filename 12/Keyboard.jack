@@ -10,6 +10,8 @@ class Keyboard {
 
     /** Initializes the keyboard. */
     function void init() {
+		let keyboard = 24576;
+		return;
     } 
 
     /**
@@ -47,14 +49,12 @@ class Keyboard {
      * of the pressed key.
      */
     function char readChar() {
-		display the cursor
-		while(keypressed()==0):
-			do nothing
-		let c = code of the pressed 
-		while(pressed !=0
-			do nothing
-		display c at the current cursor loc
-		advance the cursor
+		var char key;
+		while(keypressed()==0){}
+		let key = Keyboard.KeyPressed(); 
+		while(~(Keyboard.KeyPressed()=0)){}
+		do Output.printChar(key);
+		return key;
     }
 
     /**								
@@ -63,10 +63,15 @@ class Keyboard {
      * and returns its value. Also handles user backspaces.
      */
     function String readLine(String message) {
-		var string str;
-		repeat
-			c = readChar();
-			if(c==newline):
+		var string line;
+		var char c;
+		
+		do Output.printString(message);
+		
+		let line = string.new(50); arbitrary max length for now
+		let c = Keyboard.readChar();
+		while( ~(c = String.newLine() ) {
+			if(c==):
 				display newline
 				return str
 			else
