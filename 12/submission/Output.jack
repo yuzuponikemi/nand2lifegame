@@ -18,6 +18,9 @@ class Output {
 
     // Character map for displaying characters
     static Array charMaps; 
+    static int cursor_x, cursor_y;
+    static Array screen;
+    static Array charmasks;
 
     /** Initializes the screen, and locates the cursor at the screen's top-left. */
     function void init() {
