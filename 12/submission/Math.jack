@@ -1,0 +1,144 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+
+	static Array twoToThe;
+	
+    /** Initializes the library. */
+    function void init() {
+		var int prod;
+		var int cou;		
+		let twoToThe = Array.new(16);
+		let cou = 0;
+		let prod = 1;
+        while (cou < 16) {
+        	let twoToThe[cou]=prod;
+        	//do Output.printInt(prod);
+        	//do Output.println();
+            let cou = cou + 1;
+            let prod = prod + prod;
+        }
+        return ;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+		if(x<0){let x = -x;}
+		return x;
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+	 can be done only with addition, because digits counts:  w = log_2(N)
+	 
+     */
+    function int multiply(int x, int y) {
+    	var int shiftedX, sum, cou ;
+		let sum = 0;
+		let cou = 0;
+		let shiftedX = x;
+		while( cou<16 ) {
+			if (Math.bit(y,cou) = -1) { 
+				let sum = sum + shiftedX;
+			}
+			let shiftedX = shiftedX + shiftedX;
+			let cou = cou + 1;
+		}
+		return sum;
+    }
+    
+    /** Returns true if the j-th bit of the integer x is 1 and false otherwise. 
+	twoToThe[ j], whose j -th location holds 
+	the value 2 to the power of j
+	*/
+    function int bit(int x, int j) {
+    	var int temp;
+		let temp = (x & twoToThe[j]) ;
+		if (temp=0) {return 0 ; }
+		else { return -1 ; }
+    }   
+    
+     /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) {
+    	var int q, qy;
+    	var int absx, absy;
+    	var boolean maina;
+    	//let maina = ((x*y) < 0 );
+    	let maina = false;
+    	if ((x<0) & (y>0)){let maina = true;}
+    	if ((x>0) & (y<0)){let maina = true;}    	
+    	let absx = Math.abs(x);
+    	let absy = Math.abs(y);
+    	if (absy>absx){return 0;}
+    	//do Output.printInt(x);
+    	//do Output.printInt(y);
+    	//do Output.printInt(absx);
+    	//do Output.printInt(absy);
+    	//do Output.printInt(maina);
+    	//do Output.println();	
+		let q = Math.divide(absx,(absy+absy));
+		//do Output.printInt(q);
+        //do Output.println();		
+        let qy = q*absy;
+		if ((absx-(qy+qy) )< absy){
+			if (~(maina)){
+			return q+q ;
+			}
+			else{return -q-q;}
+		}
+		else{
+			if (~(maina)){
+			return q+q+1 ;
+			}
+			else{return -q-q-1;}
+		}
+    }
+
+    /** Returns the integer part of the square root of x.
+	* y = sqrt(x)
+	*/
+    function int sqrt(int x) {
+    	var int y, prod, cou, ytoj;
+		let y = 0;
+		let cou = 8;
+		while (cou > -1) {
+			let ytoj = (y+twoToThe[cou]);
+			let prod = Math.multiply(ytoj, ytoj) ;
+			if (  (  (prod < (x) ) | (prod=x)  )   & (prod > 0)  ) {
+				let y = ytoj ;	
+				//do Output.printInt(y);
+        		//do Output.println();			
+        	}
+			let cou = cou - 1;
+		}
+		return y ;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+    	if(a>b) {let b = a ; }
+		return b ;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+    	if(a<b) {let b = a ; }
+		return b ;
+    }
+
+
+	
+}
