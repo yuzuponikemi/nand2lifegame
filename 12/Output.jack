@@ -215,7 +215,7 @@ class Output {
 		var int mask, address, bitmap, i;
 		
 		//get the character bitmap
-		let map = Output.getmap(c);
+		let map = Output.getMap(c);
 		let address = (cursor_y * 32 * 11) + (cursor_x / 2);
 		let mask = cursor_x & 1;
 		
@@ -226,7 +226,7 @@ class Output {
 			if ( mask = 1){
 				let bitmap = bitmap * 256;
 			}
-			let screen[address] = screen[address] & charMasks[mask] | bitmap;
+			let screen[address] = screen[address] & charmasks[mask] | bitmap;
 			let address = address + 32;
 			let i = i + 1;
 		}
@@ -272,10 +272,12 @@ class Output {
 			let cursor_y = cursor_y + 1;
 		}
 		else {
-			do Output.scroll();
+			let cursor_x = 0;
+            let cursor_y = 0;
 		}
 		return;
     }
+    
 
     /** Moves the cursor one column back. */
     function void backSpace() {

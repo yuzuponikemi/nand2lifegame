@@ -12,13 +12,11 @@
  * data types.
  */
 class Array {
-    field int base;
+
 
     /** Constructs a new Array of the given size. */
     function Array new(int size) {
-        var int base;
-        let base = Memory.alloc(size);
-        return base;
+        return Memory.alloc(size);
     }
 
     /** Disposes this array. */
